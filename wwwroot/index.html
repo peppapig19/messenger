@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Вход</title>
+</head>
+<body>
+    <div id="loginBlock">
+        Введите логин:<br />
+        <input id="userName" type="text" />
+        <input id="loginBtn" type="button" value="Войти" />
+    </div><br />
+
+    <script>
+        // установка имени пользователя
+        document.getElementById("loginBtn").addEventListener("click", function (e) {
+            localStorage.setItem("name", document.getElementById("userName").value);
+            document.location.href="messenger.html";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Мессенджер</title>
+</head>
+<body>
+    <div id="header"></div><br />
+ 
+    <div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Отправить" />
+    </div>
+
+    <div id="chatroom"></div>
+
+    <script src="js/dist/browser/signalr.min.js"></script>
+    <script>
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .build();
+ 
+        let userName = localStorage.getItem("name");
+        document.getElementById("header").innerHTML = '<h3>Добро пожаловать ' + userName + '</h3>';
+
+        // получение сообщения от сервера
+        hubConnection.on('Send', function (message, userName) {
+            // создаем элемент <b> для имени пользователя
+            let userNameElem = document.createElement("b");
+            userNameElem.appendChild(document.createTextNode(userName + ': '));
+  
+            // создаем элемент <p> для сообщения пользователя
+            let elem = document.createElement("p");
+            elem.appendChild(userNameElem);
+            elem.appendChild(document.createTextNode(message));
+  
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+        });
+
+        // отправка сообщения на сервер
+        document.getElementById("sendBtn").addEventListener("click", function (e) {
+            let message = document.getElementById("message").value;
+            hubConnection.invoke("Send", message, userName);
+        });
+ 
+        hubConnection.start();
+    </script>
+</body>
+</html>
