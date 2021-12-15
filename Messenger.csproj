@@ -1,15 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>daea4b85-ea6e-4164-af33-b10ffdc6d8e2</UserSecretsId>
   </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="wwwroot\js" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="wwwroot\index.html" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.tools" Version="5.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0" />
+  </ItemGroup>
 
 </Project>

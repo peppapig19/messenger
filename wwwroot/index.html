@@ -1,22 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>Вход</title>
+    <meta charset="utf-8" />
+    <title>Вход</title>
 </head>
-<body>
-    <div id="loginBlock">
-        Введите логин:<br />
-        <input id="userName" type="text" />
-        <input id="loginBtn" type="button" value="Войти" />
-    </div><br />
 
-    <script>
-        // установка имени пользователя
-        document.getElementById("loginBtn").addEventListener("click", function (e) {
-            localStorage.setItem("name", document.getElementById("userName").value);
-            document.location.href="messenger.html";
-        });
-    </script>
+<body>
+    <div id="loginForm">
+        <p>Введите логин:</p>
+        <input id="usernameInput" type="text" /><br />
+
+        <p>Введите пароль:</p>
+        <input id="passwordInput" type="password" /><br />
+
+        <br />
+        <input id="loginBtn" type="button" value="Вход" />
+        <input id="regBtn" type="button" value="Регистрация" />
+    </div><br />
+
+    <div id="info"></div>
+
+    <script src="js/dist/browser/signalr.min.js"></script>
+    <script>
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .build();
+
+        // установка имени и пароля пользователя
+        document.getElementById("loginBtn").addEventListener("click", function (e) {
+            document.getElementById("info").innerHTML = "";
+            let username = document.getElementById("usernameInput").value;
+            let password = document.getElementById("passwordInput").value;
+            hubConnection.invoke("Check", username, password);
+        });
+
+        hubConnection.on("Check", function (result) {
+            if (result) {
+                sessionStorage.setItem("un", document.getElementById("usernameInput").value);
+                location.href = "messenger.html";
+            }
+            else {
+                document.getElementById("info").innerHTML = "<h3>Неправильный логин или пароль!</h3>";
+            }
+        });
+
+        document.getElementById("regBtn").addEventListener("click", function (e) {
+            document.getElementById("info").innerHTML = "";
+            let username = document.getElementById("usernameInput").value;
+            let password = document.getElementById("passwordInput").value;
+            hubConnection.invoke("Register", username, password);
+        });
+
+        hubConnection.on("RegResult", function (result) {
+            document.getElementById("info").innerHTML = "<h3>" + result + "</h3>";
+        });
+
+        hubConnection.start();
+    </script>
 </body>
 </html>
