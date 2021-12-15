@@ -8,7 +8,7 @@ namespace Messenger.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-/*             migrationBuilder.AlterDatabase()
+            migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:PostgresExtension:pgcrypto", ",,");
 
             migrationBuilder.CreateTable(
@@ -47,16 +47,24 @@ namespace Messenger.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_messages_un",
                 table: "messages",
-                column: "un"); */
+                column: "un");
+
+            migrationBuilder.Sql("CREATE OR REPLACE FUNCTION public.hash_password() RETURNS trigger LANGUAGE plpgsql AS $function$ BEGIN UPDATE users SET pw = crypt(pw, gen_salt('bf', 8)) WHERE un = NEW.un; RETURN NEW; END; $function$;");
+
+            migrationBuilder.Sql("CREATE TRIGGER hash_password_trigger AFTER INSERT ON public.users FOR EACH ROW EXECUTE PROCEDURE public.hash_password();");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-/*             migrationBuilder.DropTable(
+            migrationBuilder.Sql("DROP FUNCTION public.hash_password");
+
+            migrationBuilder.Sql("DROP TRIGGER hash_password_trigger");
+
+            migrationBuilder.DropTable(
                 name: "messages");
 
             migrationBuilder.DropTable(
-                name: "users"); */
+                name: "users");
         }
     }
 }
